@@ -3,10 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"kairos-go/packet"
 	"kairos-go/remote"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/websocket"
 )
@@ -29,16 +31,35 @@ type BinaryMessage struct {
 	Data   []byte
 }
 
+func determineListenPort() (string, error) {
+	port := os.Getenv("PORT")
+	if port == "" {
+		return "", fmt.Errorf("$PORT not set")
+	}
+	return ":" + port, nil
+}
+
 func main() {
-	http.HandleFunc("/ws", handleConnections)
+	http.HandleFunc("/ws", handleConnections) // ws://ip:port/ws
 
 	go handleBinaryMessages()
 
-	log.Println("http server started on :8000")
-	err := http.ListenAndServe(":8000", nil)
+	port, err := determineListenPort()
+	if err != nil {
+		log.Fatal("$PORT is not set")
+	}
+
+	log.Printf("http server started on %s", port)
+	err = http.ListenAndServe(port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+
+	// log.Println("http server started on :8000")
+	// err := http.ListenAndServe(":8000", nil)
+	// if err != nil {
+	// 	log.Fatal("ListenAndServe: ", err)
+	// }
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
@@ -58,8 +79,8 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	remoteClient.OnConnected()
 
 	for {
-		messageType, p, err := ws.ReadMessage()
-		log.Println("data: ", p)
+		messageType, data, err := ws.ReadMessage()
+		log.Println("data: ", data)
 		if err != nil {
 			log.Println("error: %v", err)
 			delete(clients, ws)
@@ -69,7 +90,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		if messageType == websocket.BinaryMessage {
 			receiveBinayChannel <- BinaryMessage{
 				Client: ws,
-				Data:   p,
+				Data:   data,
 			}
 		}
 	}
