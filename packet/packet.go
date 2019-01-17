@@ -21,14 +21,16 @@ const (
 	SCLoggedIn PacketName = 20001
 )
 
+// Packet use for represent packet
 type Packet struct{}
 
+// ReceiveMessage use for read packet from websocket
 func ReceiveMessage(packetID uint16, reader *bytes.Reader, remoteClient remote.Remote, clients map[*websocket.Conn]remote.Remote) {
 	switch PacketName(packetID) {
 	case CSLogin:
 		log.Println("CSLogin")
 
-		packetReader := packet_reader.PacketReader{
+		packetReader := packetreader.PacketReader{
 			BytesReader: reader,
 		}
 
@@ -81,5 +83,5 @@ func sendReceiveLoggedIn() []byte {
 		int8(20),
 	}
 
-	return packet_writer.WritePacket(data)
+	return packetwriter.WritePacket(data)
 }

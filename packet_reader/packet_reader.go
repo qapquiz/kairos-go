@@ -1,4 +1,4 @@
-package packet_reader
+package packetreader
 
 import (
 	"bytes"
@@ -105,7 +105,7 @@ func (packetReader *PacketReader) ReadInt64() int64 {
 	return number
 }
 
-func (packetReader *PacketReader) Readfloat32() float32 {
+func (packetReader *PacketReader) ReadFloat32() float32 {
 	var number float32
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -115,7 +115,7 @@ func (packetReader *PacketReader) Readfloat32() float32 {
 	return number
 }
 
-func (packetReader *PacketReader) Readfloat64() float64 {
+func (packetReader *PacketReader) ReadFloat64() float64 {
 	var number float64
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {

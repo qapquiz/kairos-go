@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"kairos-go/packet"
 	"kairos-go/remote"
 	"log"
@@ -15,7 +14,7 @@ import (
 
 var clients = make(map[*websocket.Conn]remote.Remote) // connected clients
 var broadcast = make(chan BinaryMessage)              // broadcast channel
-var receiveBinayChannel = make(chan BinaryMessage)
+var receiveBinaryChannel = make(chan BinaryMessage)
 
 // Configure the upgrader
 var upgrader = websocket.Upgrader{
@@ -31,35 +30,27 @@ type BinaryMessage struct {
 	Data   []byte
 }
 
-func determineListenPort() (string, error) {
+func determineListenPort() string {
 	port := os.Getenv("PORT")
 	if port == "" {
-		return "", fmt.Errorf("$PORT not set")
+		return ":80"
 	}
-	return ":" + port, nil
+
+	return ":" + port
 }
 
 func main() {
 	http.HandleFunc("/ws", handleConnections) // ws://ip:port/ws
 
-	go handleBinaryMessages()
+	go handleBinaryMessages() // thread::spawn
 
-	port, err := determineListenPort()
-	if err != nil {
-		log.Fatal("$PORT is not set")
-	}
+	port := determineListenPort()
 
 	log.Printf("http server started on %s", port)
-	err = http.ListenAndServe(port, nil)
+	err := http.ListenAndServe(port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-
-	// log.Println("http server started on :8000")
-	// err := http.ListenAndServe(":8000", nil)
-	// if err != nil {
-	// 	log.Fatal("ListenAndServe: ", err)
-	// }
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
@@ -82,13 +73,13 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		messageType, data, err := ws.ReadMessage()
 		log.Println("data: ", data)
 		if err != nil {
-			log.Println("error: %v", err)
+			log.Printf("error: %v", err)
 			delete(clients, ws)
 			break
 		}
 
 		if messageType == websocket.BinaryMessage {
-			receiveBinayChannel <- BinaryMessage{
+			receiveBinaryChannel <- BinaryMessage{
 				Client: ws,
 				Data:   data,
 			}
@@ -98,9 +89,9 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 
 func handleBinaryMessages() {
 	for {
-		binaryMessage := <-receiveBinayChannel
+		binaryMessage := <-receiveBinaryChannel
 
-		reader := bytes.NewReader(binaryMessage.Data)
+		reader := createReaderFromData(binaryMessage.Data)
 
 		var packetID uint16
 		err := binary.Read(reader, binary.LittleEndian, &packetID)
@@ -112,4 +103,8 @@ func handleBinaryMessages() {
 
 		packet.ReceiveMessage(packetID, reader, remoteClient, clients)
 	}
+}
+
+func createReaderFromData(data []byte) *bytes.Reader {
+	return bytes.NewReader(data)
 }

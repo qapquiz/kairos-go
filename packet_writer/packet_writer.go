@@ -1,4 +1,4 @@
-package packet_writer
+package packetwriter
 
 import (
 	"bytes"
@@ -17,12 +17,12 @@ func WritePacket(data []interface{}) []byte {
 		default:
 			err := binary.Write(buffer, binary.LittleEndian, v)
 			if err != nil {
-				log.Println("binary.Write failed: ", err)
+				log.Fatal("binary.Write failed: ", err)
 			}
 		}
 	}
 
-	log.Println("Send data back: ", buffer.Bytes())
+	//log.Println("Send data back: ", buffer.Bytes())
 
 	return buffer.Bytes()
 }
