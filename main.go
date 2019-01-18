@@ -80,7 +80,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		switch (messageType) {
+		switch messageType {
 		case websocket.TextMessage:
 			log.Println("Data from socket(TextMessage)", string(data))
 		case websocket.BinaryMessage:
