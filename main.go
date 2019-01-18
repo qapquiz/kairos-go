@@ -40,11 +40,13 @@ func determineListenPort() string {
 }
 
 func main() {
+	runServer(determineListenPort())
+}
+
+func runServer(port string) {
 	http.HandleFunc("/ws", handleConnections) // ws://ip:port/ws
 
 	go handleBinaryMessages() // thread::spawn
-
-	port := determineListenPort()
 
 	log.Printf("http server started on %s", port)
 	err := http.ListenAndServe(port, nil)
@@ -78,11 +80,17 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		if messageType == websocket.BinaryMessage {
+		switch (messageType) {
+		case websocket.TextMessage:
+			log.Println("Data from socket(TextMessage)", string(data))
+		case websocket.BinaryMessage:
 			receiveBinaryChannel <- BinaryMessage{
 				Client: ws,
 				Data:   data,
 			}
+		case websocket.CloseMessage:
+		case websocket.PingMessage:
+		case websocket.PongMessage:
 		}
 	}
 }
