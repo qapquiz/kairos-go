@@ -1,4 +1,4 @@
-package packetreader
+package packet
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ func TestReadUInt8(t *testing.T) {
 
 	var data = []byte{ 20 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -26,7 +26,7 @@ func TestReadUInt16(t *testing.T) {
 
 	var data = []byte{ 17, 39 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -42,7 +42,7 @@ func TestReadUInt32(t *testing.T) {
 
 	var data = []byte{ 20, 0, 0, 0 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -58,7 +58,7 @@ func TestReadUInt64(t *testing.T) {
 
 	var data = []byte{ 20, 0, 0, 0, 0, 0, 0, 0 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -74,7 +74,7 @@ func TestReadInt8(t *testing.T) {
 
 	var data = []byte{ 236 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -90,7 +90,7 @@ func TestReadInt16(t *testing.T) {
 
 	var data = []byte{ 239, 216 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -106,7 +106,7 @@ func TestReadInt32(t *testing.T) {
 
 	var data = []byte{ 236, 255, 255, 255 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -122,7 +122,7 @@ func TestReadInt64(t *testing.T) {
 
 	var data = []byte{ 236, 255, 255, 255, 255, 255, 255, 255 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -138,7 +138,7 @@ func TestReadFloat32(t *testing.T) {
 
 	var data = []byte{ 154, 153, 161, 193 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -154,7 +154,7 @@ func TestReadFloat64(t *testing.T) {
 
 	var data = []byte{ 51, 51, 51, 51, 51, 51, 52, 192 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -170,7 +170,7 @@ func TestReadString(t *testing.T) {
 
 	var data = []byte{ 116, 101, 115, 116, 0 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -186,7 +186,7 @@ func TestBooleanWhenOneMustBeTrue(t *testing.T) {
 
 	var data = []byte{ 1 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 
@@ -202,7 +202,7 @@ func TestBooleanWhenZeroMustBeFalse(t *testing.T) {
 
 	var data = []byte{ 0 }
 
-	packetReader := PacketReader{
+	packetReader := Reader{
 		BytesReader: bytes.NewReader(data),
 	}
 

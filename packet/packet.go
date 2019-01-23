@@ -3,8 +3,6 @@ package packet
 import (
 	"bytes"
 	"database/sql"
-	"kairos-go/packet_reader"
-	"kairos-go/packet_writer"
 	"kairos-go/remote"
 	"log"
 
@@ -30,7 +28,7 @@ func ReceiveMessage(packetID uint16, reader *bytes.Reader, remoteClient remote.R
 	case CSLogin:
 		log.Println("CSLogin")
 
-		packetReader := packetreader.PacketReader{
+		packetReader := Reader{
 			BytesReader: reader,
 		}
 
@@ -83,5 +81,5 @@ func sendReceiveLoggedIn() []byte {
 		int8(20),
 	}
 
-	return packetwriter.WritePacket(data)
+	return WritePacket(data)
 }

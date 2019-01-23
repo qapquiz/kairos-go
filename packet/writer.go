@@ -1,4 +1,4 @@
-package packetwriter
+package packet
 
 import (
 	"bytes"

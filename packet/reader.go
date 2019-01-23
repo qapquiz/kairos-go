@@ -1,4 +1,4 @@
-package packetreader
+package packet
 
 import (
 	"bytes"
@@ -6,12 +6,12 @@ import (
 	"log"
 )
 
-type PacketReader struct {
+type Reader struct {
 	BytesReader *bytes.Reader
 }
 
 // Use for ReadString from []bytes read until found charCode 0 (it's mean that string end)
-func (packetReader *PacketReader) ReadString() string {
+func (packetReader *Reader) ReadString() string {
 	message := make([]byte, 0)
 
 	for {
@@ -27,7 +27,7 @@ func (packetReader *PacketReader) ReadString() string {
 	return string(message[:])
 }
 
-func (packetReader *PacketReader) ReadUInt8() uint8 {
+func (packetReader *Reader) ReadUInt8() uint8 {
 	number, err := packetReader.BytesReader.ReadByte()
 	if err != nil {
 		log.Println("ReadUInt8 Error!")
@@ -36,7 +36,7 @@ func (packetReader *PacketReader) ReadUInt8() uint8 {
 	return uint8(number)
 }
 
-func (packetReader *PacketReader) ReadUInt16() uint16 {
+func (packetReader *Reader) ReadUInt16() uint16 {
 	var number uint16
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -46,7 +46,7 @@ func (packetReader *PacketReader) ReadUInt16() uint16 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadUInt32() uint32 {
+func (packetReader *Reader) ReadUInt32() uint32 {
 	var number uint32
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -56,7 +56,7 @@ func (packetReader *PacketReader) ReadUInt32() uint32 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadUInt64() uint64 {
+func (packetReader *Reader) ReadUInt64() uint64 {
 	var number uint64
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -66,7 +66,7 @@ func (packetReader *PacketReader) ReadUInt64() uint64 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadInt8() int8 {
+func (packetReader *Reader) ReadInt8() int8 {
 	number, err := packetReader.BytesReader.ReadByte()
 	if err != nil {
 		log.Println("ReadInt8 Error!")
@@ -75,7 +75,7 @@ func (packetReader *PacketReader) ReadInt8() int8 {
 	return int8(number)
 }
 
-func (packetReader *PacketReader) ReadInt16() int16 {
+func (packetReader *Reader) ReadInt16() int16 {
 	var number int16
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -85,7 +85,7 @@ func (packetReader *PacketReader) ReadInt16() int16 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadInt32() int32 {
+func (packetReader *Reader) ReadInt32() int32 {
 	var number int32
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -95,7 +95,7 @@ func (packetReader *PacketReader) ReadInt32() int32 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadInt64() int64 {
+func (packetReader *Reader) ReadInt64() int64 {
 	var number int64
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -105,7 +105,7 @@ func (packetReader *PacketReader) ReadInt64() int64 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadFloat32() float32 {
+func (packetReader *Reader) ReadFloat32() float32 {
 	var number float32
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -115,7 +115,7 @@ func (packetReader *PacketReader) ReadFloat32() float32 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadFloat64() float64 {
+func (packetReader *Reader) ReadFloat64() float64 {
 	var number float64
 	err := binary.Read(packetReader.BytesReader, binary.LittleEndian, &number)
 	if err != nil {
@@ -125,7 +125,7 @@ func (packetReader *PacketReader) ReadFloat64() float64 {
 	return number
 }
 
-func (packetReader *PacketReader) ReadBoolean() bool {
+func (packetReader *Reader) ReadBoolean() bool {
 	number, err := packetReader.BytesReader.ReadByte()
 	if err != nil {
 		log.Println("ReadBoolean Error!")
