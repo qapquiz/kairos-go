@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func WritePacket(data []interface{}) []byte {
+func Write(data []interface{}) []byte {
 	buffer := new(bytes.Buffer)
 
 	for _, v := range data {
@@ -15,8 +15,7 @@ func WritePacket(data []interface{}) []byte {
 			buffer.Write([]byte(v.(string)))
 			buffer.WriteByte(uint8(0))
 		default:
-			err := binary.Write(buffer, binary.LittleEndian, v)
-			if err != nil {
+			if err := binary.Write(buffer, binary.LittleEndian, v); err != nil {
 				log.Fatal("binary.Write failed: ", err)
 			}
 		}

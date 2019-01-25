@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"bytes"
@@ -15,18 +15,18 @@ const (
 	CSLogin Packet = 10001
 )
 
-var packetMapper = map[Packet]func(c *Client, r *packet.Reader){
+var packetMapper = map[Packet]func(remote *Remote, reader *packet.Reader){
 	CSLogin: receiveLogin,
 }
 
 // PacketReceiver for receive message from websocket connection
 type PacketReceiver struct {
-	receive chan ClientWithData
+	receive chan RemoteWithData
 }
 
 func newPacketReceiver() *PacketReceiver {
 	return &PacketReceiver{
-		receive: make(chan ClientWithData, 256),
+		receive: make(chan RemoteWithData, 256),
 	}
 }
 
@@ -37,10 +37,10 @@ func readPacketID(r *packet.Reader) Packet {
 func (pr *PacketReceiver) run() {
 	for {
 		select {
-		case clientWithData := <-pr.receive:
+		case remoteWithData := <-pr.receive:
 
 			packetReader := &packet.Reader{
-				BytesReader: bytes.NewReader(clientWithData.data),
+				BytesReader: bytes.NewReader(remoteWithData.data),
 			}
 			packet := readPacketID(packetReader)
 
@@ -50,14 +50,14 @@ func (pr *PacketReceiver) run() {
 				return
 			}
 
-			packetFunc(clientWithData.client, packetReader)
+			packetFunc(remoteWithData.remote, packetReader)
 		}
 	}
 }
 
-func receiveLogin(c *Client, r *packet.Reader) {
-	name := r.ReadString()
+func receiveLogin(remote *Remote, reader *packet.Reader) {
+	name := reader.ReadString()
 	fmt.Println("name: ", name)
 
-	c.send <- []byte{}
+	remote.send <- []byte{}
 }
