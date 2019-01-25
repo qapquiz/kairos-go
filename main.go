@@ -36,9 +36,8 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 	client.hub.register <- client
 
-	// go client.writePump()
-	// go client.readPump()
 	go client.read()
+	go client.write()
 }
 
 func main() {
