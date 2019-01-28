@@ -21,7 +21,7 @@ func serveClient() {
 		client.ServeWs(clientHub, w, r)
 	})
 
-	fmt.Println("websocket serve client on :8080 at /ws")
+	fmt.Printf("websocket serve client on %s at /ws", *clientAddr)
 
 	err := http.ListenAndServe(*clientAddr, nil)
 	if err != nil {

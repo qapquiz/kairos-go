@@ -13,6 +13,8 @@ type Packet uint16
 const (
 	// CSLogin Client send login to channel
 	CSLogin Packet = 10001
+
+	SCLogin Packet = 20001
 )
 
 var packetMapper = map[Packet]func(remote *Remote, reader *packet.Reader){
@@ -57,7 +59,19 @@ func (pr *PacketReceiver) run() {
 
 func receiveLogin(remote *Remote, reader *packet.Reader) {
 	name := reader.ReadString()
-	fmt.Println("name: ", name)
+	age := reader.ReadInt8()
+	fmt.Printf("\nLogin with name : %s and age : %v", name, age)
 
-	remote.send <- []byte{}
+	var friends []string
+	friends = append(friends, "ball", "P'Jo", "P'Gun", "P'Nan")
+
+	packetWriter := packet.NewWriter(uint16(SCLogin))
+	packetWriter.WriteString(name)
+	packetWriter.WriteInt8(age)
+	packetWriter.WriteBoolean(true)
+	packetWriter.WriteUInt8(uint8(len(friends)))
+	for _, v := range friends {
+		packetWriter.WriteString(v)
+	}
+	remote.send <- packetWriter.GetData()
 }
