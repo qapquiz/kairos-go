@@ -86,9 +86,9 @@ func (packetWriter *Writer) WriteBoolean(data bool) {
 }
 
 func (packetWriter *Writer) write(data interface{}) {
-	switch data.(type) {
+	switch v := data.(type) {
 	case string:
-		packetWriter.ByteBuffer.Write([]byte(data.(string)))
+		packetWriter.ByteBuffer.Write([]byte(v))
 		packetWriter.ByteBuffer.WriteByte(uint8(0))
 	default:
 		if err := binary.Write(packetWriter.ByteBuffer, binary.LittleEndian, data); err != nil {
